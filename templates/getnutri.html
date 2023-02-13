@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+    <link href="{{ url_for('static', filename='stylesheets/bootstrap.css') }}" rel="stylesheet" media="screen">
+    <link href="{{ url_for('static', filename='stylesheets/calnutri.css') }}" rel="stylesheet" media="screen">
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+
+</head>
+
+<body>
+  <div id="hdr"></div>
+  <div>
+
+    <div class="container wht pb-5">
+         <h1> Search foog item </h1>
+
+        <div class="input-group">
+        <input id="srchbx" type="text" placeholder="search food..." >
+        <button class="btn btn-success btn-block input-group-append" onclick="subdata()" id="subm">search</button>
+        </div>
+        <div id="drpdwn"></div>
+
+    </div>
+   <div id="nutri"></div>
+  </div>
+
+
+
+</body>
+
+    <script>
+const nutrdv= document.getElementById("nutri");
+   var drpdwn= document.getElementById("drpdwn");
+
+        var inp= document.getElementById("srchbx");
+        const btn= document.getElementById("subm");
+        btn.addEventListener("click", srchf);
+        //inp.addEventListener("change", srchf);
+
+    class drpdwnopt{
+  constructor(drpdwn,inp,dsh,indx){
+  //dv.style.backgroundColor='lightblue';
+    this.drpdwn= drpdwn;
+    this.inp= inp; this.dsh= dsh;
+    this.indx=indx;
+    this.optnstb= document.createElement("p");
+    this.optnstb.innerHTML= this.dsh;
+    this.optnstb.setAttribute('indx',indx);
+    this.optnstb.addEventListener("click", ()=> {this.del()});
+    this.drpdwn.appendChild(this.optnstb);
+    this.optnstb.className= "pbtn";
+  }
+  del(){
+    this.drpdwn.innerHTML=" "; //this.drpdwn.innerHTML=this.optnstb.getAttribute('indx');
+    this.inp.value= this.optnstb.innerHTML;
+
+    this.inp.setAttribute('indx',this.optnstb.getAttribute('indx'));
+    getnutri(this.inp.getAttribute('indx'));
+
+
+  }
+
+}
+
+        function srchf(){
+        var srchtxt= inp.value;
+        $.ajax({
+      type:'POST',
+       url: "{{url_for('getnutri')}}",
+       //dataType: "json",
+        contentType: "application/json",
+       data: JSON.stringify({'dat': srchtxt, 'srch':'yes'}),
+        success: function(data){
+        var jsndt= JSON.parse(data);
+        for(var dshid in jsndt){
+
+      var optob= new drpdwnopt(drpdwn, inp, jsndt[dshid], dshid);
+
+      }
+
+     },
+    error: function(reslt){alert(reslt);}
+ });
+
+        }
+
+         function getnutri(indx){
+
+        $.ajax({
+      type:'POST',
+       url: "{{url_for('getnutri')}}",
+       //dataType: "json",
+        contentType: "application/json",
+       data: JSON.stringify({'dat': indx, 'srch':'no'}),
+        success: function(data){
+        var jsndt= JSON.parse(data);
+
+
+     },
+    error: function(reslt){alert(reslt);}
+ });
+
+        }
+
+
+
+    </script>
+
+</html>
+

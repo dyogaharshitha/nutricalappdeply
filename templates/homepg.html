@@ -3,9 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>home page</title>
+    <link href="{{ url_for('static', filename='stylesheets/bootstrap.css') }}" rel="stylesheet" media="screen">
+    <link href="{{ url_for('static', filename='stylesheets/homepg.css') }}" rel="stylesheet" media="screen">
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/hdr.js') }}"></script>
 </head>
 <body>
-    <button onclick="window.location.href='{{ url_for('showhomepg') }}';"> Log day meal </button>
-    <button onclick="window.location.href= '{{ url_for('calnutri') }}' ;"> Get diet for 1 day</button>
+<div id="hdr"> </div>
+<div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active" href="{{ url_for('showhomepg') }}">Home </a>
+      <a class="nav-item nav-link" href="{{ url_for('calnutri') }}">get nutrition</a>
+      <a class="nav-item nav-link" href="#">about us</a>
+      <a class="nav-item nav-link disabled" href="#">create user</a>
+    </div>
+  </div>
+</nav>
+</div>
+    <div class="container">
+    <div class="imgsz"><img src= "{{ url_for('static', filename='images/salad-g009574f51_1280.jpg') }}" width="90%" height="60%"></div>
+        <div class="row">
+    <button class="btn btn-primary btn-lg btn-block col" onclick="window.location.href='{{ url_for('showhomepg') }}';"> Get nutrition of food item </button>
+    <button class="btn btn-primary btn-lg btn-block col" onclick="window.location.href= '{{ url_for('calnutri') }}' ;"> Nutri check for your meal today</button>
+        </div>
+         <div class="row d-none">
+    <button class="btn btn-primary btn-lg btn-block col" onclick="window.location.href='{{ url_for('showhomepg') }}';"> articles and recipies </button>
+    <button class="btn btn-primary btn-lg btn-block col" onclick="window.location.href= '{{ url_for('calnutri') }}' ;"> Get diet for a full day</button>
+        </div>
+         <div class="row d-none">
+    <button class="btn btn-primary btn-lg btn-block col" onclick="window.location.href='{{ url_for('showhomepg') }}';"> Log a meal </button>
+    <button class="btn btn-primary btn-lg btn-block col" onclick="window.location.href= '{{ url_for('calnutri') }}' ;"> manage meal settings </button>
+        </div>
+    </div>
 </body>
 </html>

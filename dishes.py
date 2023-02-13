@@ -9,7 +9,7 @@ class dishesclass:
         self.dishdf = xldata.xltodf("static/database/dishnutri.xlsx");
         return self.dishdf;
 
-    def dishsbyCond(self, col, cond, limit, dishdf= " "):
+    def dishsbyCond(self, col, cond, limit, dishdf= " ", condidf=" "):
         if dishdf == " ":
             dishdf= self.dishdf;
         if cond == '<':

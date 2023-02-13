@@ -5,26 +5,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
-   
+    <link href="{{ url_for('static', filename='stylesheets/bootstrap.css') }}" rel="stylesheet" media="screen">
     <link href="{{ url_for('static', filename='stylesheets/calnutri.css') }}" rel="stylesheet" media="screen">
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
-
-
 
 </head>
 
 <body>
   <div id="hdr"></div>
-  <div id="parent">
-    <h1> Get nutrition of your meal </h1>
-    <div class="container">
-        <button class="btn" onclick="addel()">add another dish</button>
-        <button class="btn" onclick="subdata()">get nutrition</button>
+  <div>
+
+    <div class="container wht pb-5">
+         <h1> Get nutrition of your meal </h1>
+        <div class="pb-5">
+        <button class="btn btn-outline-primary btn-block" onclick="addel()">add a dish</button> for
+        <select id="mealtype" class="btn btn-outline-primary btn-block">
+         <option selected value="day">whole day</option>  <option value="breakfast">breakfast</option>
+         <option value="lunch">lunch</option> <option value="dinner">dinner</option>
+</select>  </div>
+        <div id="parent"></div>
+        <button class="btn btn-success btn-block" onclick="subdata()" id="sub">get nutrition</button>
+
     </div>
 
   </div>
 
-  <div id="nutri">  </div>
+  <div class="container ylw font-weight-bold">
+  <div id="nutri" >
+ <div class="row">
+      <p class="col"> nutrition label </p> <p class="col"> meal nutrition </p>  <p class="col"> nutrient requirements </p>
+      </div>
+      </div>
+
+      </div>
 
 </body>
 
@@ -41,7 +54,7 @@ let dsh = new Array(15);
 
 function addel(){
 //parnt.style.backgroundColor= "lightyellow";
-dsh[num]= new dishel();
+dsh[num]= new dishel();  document.getElementById("sub").style.display= "block";
 }
 
 
@@ -59,10 +72,11 @@ class drpdwnopt{
     this.optnstb.className= "pbtn";
   }
   del(){
-    this.drpdwn.innerHTML=this.optnstb.getAttribute('indx');
+    this.drpdwn.innerHTML=" "; //this.drpdwn.innerHTML=this.optnstb.getAttribute('indx');
     this.inp.value= this.optnstb.innerHTML;
 
     this.inp.setAttribute('indx',this.optnstb.getAttribute('indx'));
+
   }
 
 }
@@ -71,30 +85,35 @@ class dishel{
   constructor(){
    //parnt.style.backgroundColor= "lightorange";
    this.dv= document.createElement("div");
-   this.lbl= document.createElement("p");
+   this.inpgrp= document.createElement("div");
    this.inp= document.createElement("input");
-
+   this.inp2= document.createElement("input");
    this.dlt= document.createElement("button");
    this.drpdwn= document.createElement("div");
-   parnt.appendChild(this.dv);
-   this.dv.appendChild(this.lbl);
-   this.dv.appendChild(this.inp);
 
-   this.dv.appendChild(this.dlt);
+   parnt.appendChild(this.dv);
+   this.dv.appendChild(this.inpgrp);
    this.dv.appendChild(this.drpdwn);
-   this.lbl.innerHTML= "dish name";
-   this.dlt.innerHTML= "delete dish";
+   this.inpgrp.appendChild(this.inp);  this.inpgrp.appendChild(this.inp2);
+   this.inpgrp.appendChild(this.dlt);
+
+   this.inp.placeholder= "dish name"; this.inp2.placeholder= "Quantity in grams"; this.inp2.type= "number";
+   this.dlt.innerHTML= "remove";
+
    this.dlt.addEventListener("click", ()=> {this.delt()} );
    this.inp.addEventListener("change", ()=> {this.inpchng()} );
-   this.dv.className= "container";
+
+   this.dv.className= "flx";
+   this.inpgrp.className= "input-group";
+   this.dlt.className= "btn btn-dark input-group-append";
    this.drpdwn.className= "drpdwnmenu";
    num++;
   }
   inpchng(){
   //parnt.style.backgroundColor= "lightgreen";
-  var inp = this.inp;
+  var inp = this.inp; var inp2 = this.inp2;
 
-  var drpdwn= this.drpdwn;
+  var drpdwn= this.drpdwn; drpdwn.innerHTML=" ";
   var dishsrch= this.inp.value;
 
   $.ajax({
@@ -132,12 +151,14 @@ class dishel{
         function subdata(){
     //parnt.style.backgroundColor= "orange";
 
-    let dish= [];
+    let dish= []; var dishqty= [];
 
     for(let i=0; i<num; i++){
 
     dish[i]= dsh[i].inp.getAttribute("indx");
+    dishqty[i]=  dsh[i].inp2.value;
     }
+    var mealtyp= $("#mealtype").val();
 
 
  $.ajax({
@@ -145,24 +166,27 @@ class dishel{
     url: "{{url_for('calnutri')}}",
     //dataType: "json",
     contentType: "application/json",
-    data: JSON.stringify({'dat': dish, 'srch':'no'}),
-    success: function(data){ var dat = JSON.parse(data); //alert(dat['cal']);
+    data: JSON.stringify({'dat': dish, 'srch':'no', 'mealtyp': 'day', 'dishqty': dishqty}),
+    success: function(data){ var dat = JSON.parse(data);
     dv.innerHTML=" ";
      for(var el in dat){
-      var optnstb= document.createElement("LABEL");
+      var rw= document.createElement("div"); rw.className="row";
+      var optnstb= document.createElement("p"); optnstb.className="col";
       optnstb.innerHTML= el;
-      dv.appendChild(optnstb);
-      var optnsvl= document.createElement("LABEL");
-      optnsvl.innerHTML= dat[el];
-      dv.appendChild(optnsvl);
-      var lnbr= document.createElement("br");
-      dv.appendChild(lnbr);
+      rw.appendChild(optnstb);
+      var optnsvl= document.createElement("p"); optnsvl.className="col";
+      optnsvl.innerHTML= dat[el][0];
+      rw.appendChild(optnsvl);
+      var optnsvl2= document.createElement("p"); optnsvl2.className="col";
+      optnsvl2.innerHTML= dat[el][1];
+      rw.appendChild(optnsvl2);
+      dv.appendChild(rw);
       }
      document.getElementById("nutri").appendChild(dv);
      },
     error: function(reslt){alert(JSON.parse(reslt));}
  });
- sub.style.backgroundColor= "green";
+
 }
     </script>
 
