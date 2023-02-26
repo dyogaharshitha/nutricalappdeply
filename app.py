@@ -83,7 +83,6 @@ def getnutri():
     return render_template('getnutri.html');
 
 
-app.run(host="0.0.0.0")
 
 
 
